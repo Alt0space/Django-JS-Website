@@ -1,0 +1,82 @@
+{% load static %}
+<style>
+    .chat-dropdown-header:hover{
+        cursor: pointer;
+        background: var(--main-background-color);
+    }
+    .chat-dropdown-header{
+        color: var(--light-primary-text-color);
+    }
+    .scrollable-menu {
+        height: auto;
+        max-height: 90vh;
+        width: 500px;
+        overflow-x: hidden;
+    }
+
+    .notifications-material-icon {
+        font-size: 28px;
+
+    }
+    .notifications-icon-container{
+        width: 40px;
+        height: 40px;
+        background-color: var(--main-background-color);
+    }
+    .notifications-icon-container:hover {
+        cursor: pointer;
+        background-color: var(--secondary-text-color)
+    }
+    .notify-badge{
+        position: absolute;
+        background: transparent;
+        height:1.2rem;
+        width:1.2rem;
+        line-height: 1.2rem;
+        top:1rem;
+        right:2rem;
+        text-align: center;
+        font-size: 1rem;
+        border-radius: 50%;
+        color:white;
+        font-weight: 630;
+        margin-top:-15px;
+        margin-right: -25px;
+    }
+    #id_notifications_spinner{
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="dropdown dropstart profile">
+    <div class="d-flex notifications-icon-container rounded-circle align-items-center mr-3" data-bs-toggle="dropdown" aria-haspopup="true" id="id_profile_links1" aria-controls="id_pic_menu" aria-expanded="false">
+        <img class="rounded-circle m-auto dropdown-toggle" role="button" data-bs-target="#id_profile_links_container"  src="{{request.user.profile_image.url}}" alt="{% static 'imgs/dummy_image.png' %}" width="40" height="40">
+        <ul class="dropdown-menu" aria-labelledby="id_profile_links1" id="id_profile_links_container">
+            <li><a class="dropdown-link px-3" style="text-align: center !important;" href="{% url 'homepage:profile' request.user.username %}">Профиль</a></li>
+            <li><a class="dropdown-link px-3" style="text-align: center !important;" href="{% url 'logout' %}">Выйти</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="dropdown dropstart p-2 mt-2">
+    <div class="d-flex flex-row">
+        <div class="btn-group dropstart">
+            <img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{{request.user.profile_image.url}}" alt="codingwithmitch logo" width="40" height="40">
+            <div class="dropdown-menu" aria-labelledby="id_profile_links">
+                <a class="dropdown-item" href="{% url 'homepage:profile' request.user.username %}">Account</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dropdown">
+    <button class="rounded-circle" type="button" style="padding:0px !important; border: 0px !important;" data-bs-toggle="dropdown" aria-expanded="false">
+        <img class="account-image rounded-circle m-auto d-block" src="{{request.user.profile_image.url}}" alt="codingwithmitch logo" width="40" height="40">
+    </button>
+    <ul class="dropdown-menu dropstart">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+    </ul>
+</div>

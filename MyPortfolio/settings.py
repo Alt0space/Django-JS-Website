@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'homepage.apps.HomepageConfig',
     'register.apps.RegisterConfig',
+    'friend.apps.FriendConfig',
     'bootstrap5',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -136,6 +137,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
 LOGIN_URL = BASE_DIR / 'login'
 LOGIN_REDIRECT_URL = 'homepage:home'
 LOGOUT_REDIRECT_URL = 'homepage:home'
@@ -151,6 +154,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
+TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
 #MEDIA_ROOT = BASE_DIR / MEDIA_URL
 
 # Default primary key field type

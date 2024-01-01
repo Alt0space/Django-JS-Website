@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.views.generic import TemplateView, DetailView
 from homepage.models import Project
 from register.models import Account
@@ -6,7 +6,16 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, BaseDe
 from homepage.forms import ProjectForm, ProfileUpdateForm
 from django.urls import reverse_lazy
 from django.views.generic.list import ListView
+from django.core.files.storage import default_storage, FileSystemStorage
+import os
+import cv2
 import json
+import base64
+import requests
+from django.conf import settings
+from django.core import files
+
+TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 
 
 class HomeView(TemplateView):
@@ -74,14 +83,15 @@ class EditProfileView(UpdateView):
     template_name = "edit_profile.html"
     model = Account
     form_class = ProfileUpdateForm
-#   fields = ['username', 'email', 'profile_image', 'hide_email']
-    success_url = reverse_lazy('homepage:home')
+    #   fields = ['username', 'email', 'profile_image', 'hide_email']
     slug_field = 'username'
     slug_url_kwarg = 'username'
+    success_url = reverse_lazy('homepage:profile')
+    extra_context = {'DATA_UPLOAD_MAX_MEMORY_SIZE': settings.DATA_UPLOAD_MAX_MEMORY_SIZE}
 
     def form_valid(self, form):
-        self.success_url += str(self.request.user.username)
         self.object = form.save()
+        self.success_url = reverse_lazy('homepage:profile', kwargs={'username': self.request.user.username})
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -89,8 +99,9 @@ class DeleteProjectView(ListView, DeletionMixin):
     template_name = 'projects.html'
     model = Project
     success_url = reverse_lazy('homepage:projects')
-#   slug_field = 'name'
-#   slug_url_kwarg = 'delete'
+
+    #   slug_field = 'name'
+    #   slug_url_kwarg = 'delete'
 
     def post(self, request, *args, **kwargs):
         projects_to_delete = request.POST.getlist('project_ids')
@@ -99,7 +110,7 @@ class DeleteProjectView(ListView, DeletionMixin):
 
     def get(self, request, *args, **kwargs):
         pass
-        #projects_to_delete = request.
+        # projects_to_delete = request.
         self.object_list = self.get_queryset()
         allow_empty = self.get_allow_empty()
         if not allow_empty:
@@ -121,6 +132,8 @@ class DeleteProjectView(ListView, DeletionMixin):
                 )
         context = self.get_context_data()
         return self.render_to_response(context)
+
+
 """
     def form_valid(self, form):
         print("REQ= ", self.request.POST.get())
@@ -130,3 +143,64 @@ class DeleteProjectView(ListView, DeletionMixin):
         #self.object.delete()
         return HttpResponseRedirect(success_url)"""
 
+
+def save_temp_profile_image_from_base64String(imageString, user):
+    INCORRECT_PADDING_EXCEPTION = "Incorrect padding"
+    try:
+        if not os.path.exists(settings.TEMP):
+            os.mkdir(settings.TEMP)
+        if not os.path.exists(settings.TEMP + "/" + str(user.pk)):
+            os.mkdir(settings.TEMP + "/" + str(user.pk))
+        url = os.path.join(settings.TEMP + "/" + str(user.pk), TEMP_PROFILE_IMAGE_NAME)
+        storage = FileSystemStorage(location=url)
+        image = base64.b64decode(imageString)
+        with storage.open('', 'wb+') as destination:
+            destination.write(image)
+            destination.close()
+        return url
+    except Exception as e:
+        print("exception: " + str(e))
+        # workaround for an issue I found
+        if str(e) == INCORRECT_PADDING_EXCEPTION:
+            imageString += "=" * ((4 - len(imageString) % 4) % 4)
+            return save_temp_profile_image_from_base64String(imageString, user)
+    return None
+
+
+def crop_image(request, *args, **kwargs):
+    payload = {}
+    user = request.user
+    if request.POST and user.is_authenticated:
+        try:
+            imageString = request.POST.get("image")
+            url = save_temp_profile_image_from_base64String(imageString, user)
+            img = cv2.imread(url)
+
+            cropX = int(float(str(request.POST.get("cropX"))))
+            cropY = int(float(str(request.POST.get("cropY"))))
+            cropWidth = int(float(str(request.POST.get("cropWidth"))))
+            cropHeight = int(float(str(request.POST.get("cropHeight"))))
+            if cropX < 0:
+                cropX = 0
+            if cropY < 0:
+                cropY = 0
+            crop_img = img[cropY:cropY + cropHeight, cropX:cropX + cropWidth]
+
+            cv2.imwrite(url, crop_img)
+
+            user.profile_image.delete()
+
+            user.profile_image.save("profile_image.png", files.File(open(url, 'rb')))
+            user.save()
+
+            payload['result'] = "success"
+            payload['cropped_profile_image'] = user.profile_image.url
+
+            # delete temp file
+            os.remove(url)
+
+        except Exception as e:
+            print("exception: " + str(e))
+            payload['result'] = "error"
+            payload['exception'] = str(e)
+    return HttpResponse(json.dumps(payload), content_type="application/json")

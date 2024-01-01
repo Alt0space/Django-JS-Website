@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'homepage/style.css' %}">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        {% bootstrap_messages %}
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+
+<!-- Header -->
+{% include 'snippets/header.html' %}
+
+<!-- Body -->
+<div class="content">
+{% block content %}
+{% endblock %}
+</div>
+
+<!-- Footer -->
+{% include 'snippets/footer.html' %}
+</body>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'homepage/base.js' %}"></script>
+<script>
+ $("a[href*='" + location.pathname.replaceAll("/","") + "']").css({"color": "white", "text-shadow": "rgb(11, 187, 227) 1px 1px"});
+ if (location.pathname === '/'){
+ $("a[href='/']").css({"color": "white", "text-shadow": "rgb(11, 187, 227) 1px 1px"});
+ }
+
+</script>
+</html>

@@ -1,0 +1,14 @@
+asgiref==3.7.2
+beautifulsoup4==4.12.2
+crispy-bootstrap5==2023.10
+Django==4.2.8
+django-bootstrap-v5==1.0.11
+django-crispy-forms==2.1
+django-environ==0.11.2
+numpy==1.26.2
+opencv-python==4.9.0.80
+Pillow==10.1.0
+psycopg2-binary==2.9.9
+soupsieve==2.5
+sqlparse==0.4.4
+typing_extensions==4.9.0

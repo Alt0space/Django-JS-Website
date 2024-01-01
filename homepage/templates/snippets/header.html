@@ -43,10 +43,21 @@
 		margin-top:-15px;
 		margin-right: -25px;
 	}
+
+    .dropdown-item{
+        padding: 5px !important;
+    }
+
+    .dropdown-item:hover{
+        border-radius: 0.375rem !important;
+        background-color: var(--dark-background-color);
+    }
+
 	#id_notifications_spinner{
 		margin-top: 20px;
 		margin-bottom: 20px;
 	}
+
 </style>
     <nav class="navbar fixed-top navbar-expand-sm bg-dark navbar-dark py-0">
     <div class="d-none d-md-flex flex-row my-auto ms-2 flex-grow-1 align-items-center" >
@@ -99,16 +110,14 @@
                 </div>
             </div>
         </div>
-        <div class="dropdown">
-            <div class="btn-group dropstart">
-                <div class="d-flex notifications-icon-container rounded-circle align-items-center mr-3" data-bs-toggle="dropdown" aria-haspopup="true" id="id_profile_links" aria-controls="id_pic_menu" aria-expanded="false">
-                    <img class="rounded-circle m-auto dropdown-toggle" role="button" data-bs-target="#id_profile_links_container"  src="{{request.user.profile_image.url}}" alt="{% static 'imgs/dummy_image.png' %}" width="40" height="40">
-                    <div class="dropdown-menu" aria-labelledby="id_profile_links" id="id_profile_links_container">
-                     <div class="dropdown-item px-3"><a style="text-align: center !important;" href="{% url 'homepage:profile' username=request.user.username %}">Профиль</a></div>
-                     <div class="dropdown-item px-3"><a style="text-align: center !important;" href="{% url 'logout' %}">Выйти</a></div>
-                    </div>
-                </div>
-            </div>
+        <div class="dropdown dropstart">
+            <button class="rounded-circle" type="button" style="padding:0px !important; border: 0px !important;" data-bs-toggle="dropdown" aria-expanded="false">
+                <img class="account-image rounded-circle m-auto d-block" src="{{request.user.profile_image.url}}" alt="Изображение профиля" width="40" height="40">
+            </button>
+            <ul class="dropdown-menu dropstart m-2" style="padding: 0 !important; text-align: center;">
+                <li><a class="dropdown-item" href="{% url 'homepage:profile' username=request.user.username %}">Профиль</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+            </ul>
         </div>
     </div>
     {% endif %}
@@ -120,7 +129,6 @@
         var query = ""
         query = document.getElementById('id_q_large').value;
         window.location = ("{% url 'homepage:search' %}?q=" + query);
-        console.log("{% url 'homepage:search' %}?q=" + query);
         return false
     }
 

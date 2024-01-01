@@ -4,7 +4,7 @@
 }
 
 body{
-    background-color: #f2f2f2!important;
+    background-color: #e2e2e2 !important;
 }
 
 .content {
@@ -14,10 +14,10 @@ body{
 }
 
 :root{
-    --main-background-color: #f2f2f2;!important;
-    --dark-background-color: #a2a2a2;!important;
-    --secondary-text-color: #808080;!important;
-    --light-primary-text-color: #0080ff;!important;
+    --main-background-color: #f2f2f2 !important;
+    --dark-background-color: #a2a2a2 !important;
+    --secondary-text-color: #808080 !important;
+    --light-primary-text-color: #0080ff !important;
 }
 
 .nav-link{
@@ -50,6 +50,15 @@ body{
     border-radius: 4px;
 }
 
+.dropdown-item{
+    margin:auto;
+}
+
+.dropdown-item a{
+    margin:auto;
+    padding: 0px !important;
+
+}
 
 .current {
 box-shadow: 0px 5px 3px rgba(11, 187, 227, 0.3);
@@ -141,10 +150,20 @@ background-color:rgb(11, 187, 227);
 
 .form-check-input:checked{
   box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5); !important
-  outline: 0; !important
+  outline: 0 !important;
 }
 
 .form-check-input:focus{
   box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5); !important
-  outline: 0; !important
+  outline: 0 !important;
+}
+
+.form-check:checked{
+    box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5); !important
+    outline: 0 !important;
+}
+
+.form-check:focus{
+    box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5); !important
+outline: 0 !important;
 }

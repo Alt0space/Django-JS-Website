@@ -35,9 +35,9 @@
                 <h5 class="mb-2">{{user.username}}</h5>
 
                 {% if is_self %}
-                <a  class="mt-4 btn btn-primary" href="{% url 'homepage:edit_profile' username=request.user.username %}">Обновить</a>
+                <a  class="d-flex flex-column mt-4 button-10" style="text-decoration: none; !important;" href="{% url 'homepage:edit_profile' username=request.user.username %}">Обновить</a>
                 <div class="d-flex flex-column mt-4">
-                    <a class="m-auto" href="{% url 'password_change' %}">Поменять пароль</a>
+                    <a class="m-auto " href="{% url 'password_change' %}">Поменять пароль</a>
                 </div>
                 {% endif %}
             </div>
