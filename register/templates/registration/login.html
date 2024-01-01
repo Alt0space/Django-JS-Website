@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Авторизация{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+	 <div class="card" style="width:500px; margin-top:90px; margin-left:80px; border-radius: 10px;">
+	 <div class="card-header" style="text-align: center;"><h4 class="card-title">Авторизация</h4></div>
+	 <div class="card-body" style="background-color:rgb(151, 240, 255); border-radius: 0px 0px 10px 10px;">
+     <form method="post">
+	{% csrf_token %}
+	{{form|crispy}}
+	<p>Нет аккаунта? Зарегистрируйся тут &#128073;  <a href="/register" style="color:black; :hover{font-weight:bold};">Регистрация</a></p>
+	<button type="submit" class="button-10" role="button">Войти</button>
+    </form>
+	</div>
+	</div>
+	</div>
+{% endblock %}

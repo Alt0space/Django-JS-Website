@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %} Профиль {% endblock %}
+{% block content %}
+
+<style>
+    .profile-picture{
+        max-width: 250px;
+        height: auto;
+    }
+    .card{
+        border-radius: 12px;
+    }
+    .field-heading{
+        color: var(--secondary-text-color);
+    }
+</style>
+<div class="container">
+    <div class="card justify-content-center align-items-center pb-3 m-auto" style="width:400px">
+        <div class="d-flex flex-column gap-3">
+            <div class="profile-picture mt-4">
+                <img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image" src="{{request.user.profile_image.url}}">
+            </div>
+            <div class="">
+                <p class="mt-4 mb-1 field-heading">Почта</p>
+                {%  if is_self %}
+                <h5>{{user.email}}</h5>
+                {% else %}
+                {% if user.hide_email %}
+                <h5>**********</h5>
+                {% else %}
+                <h5>{{user.email}}</h5>
+                {% endif %}
+                {% endif %}
+                <p class="mt-4 mb-1 field-heading">Имя пользователя</p>
+                <h5 class="mb-2">{{user.username}}</h5>
+
+                {% if is_self %}
+                <a  class="mt-4 btn btn-primary" href="{% url 'homepage:edit_profile' username=request.user.username %}">Обновить</a>
+                <div class="d-flex flex-column mt-4">
+                    <a class="m-auto" href="{% url 'password_change' %}">Поменять пароль</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
