@@ -24,6 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', RegisterFormView.as_view(), name='register'),
     path('', include('homepage.urls', namespace='homepage')),
+    path('friend/', include('friend.urls', namespace='friend')),
+    path('chat/', include('chat.urls', namespace='chat')),
     path('', include("django.contrib.auth.urls")),
 ]
 

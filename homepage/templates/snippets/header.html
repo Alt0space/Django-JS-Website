@@ -71,7 +71,7 @@
       <div class="navbar-nav">
         <a class="nav-link mx-1" href="{% url 'homepage:home' %}">Главная</a>
         <a class="nav-link mx-1" href="{% url 'homepage:projects' %}">Проекты</a>
-        <a class="nav-link mx-1" href="#">Контакты</a>
+        <a class="nav-link mx-1" href="{% url 'homepage:contacts' %}">Контакты</a>
         {% if user.is_authenticated %}
         <a class="nav-link mx-1" href="#">Мои файлы</a>
         <a class="nav-link mx-1" href="#">Cообщения</a>
@@ -83,7 +83,7 @@
         {% endif %}
       </div>
     </div>
-    {% if user.is_authenticated == False %}
+    {% if request.user.is_authenticated == False %}
       <div class="d-flex my-1 gap-2">
     <form action="{% url 'login' %}" method="get" ><button class="button-10" role="button" type="submit"> Войти </button></form>
     <form action="{% url 'register' %}" method="get"><button class="button-10" role="button" type="submit">Регистрация</button></form>

@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'homepage.apps.HomepageConfig',
     'register.apps.RegisterConfig',
     'friend.apps.FriendConfig',
+    'notification.apps.NotificationConfig',
+    'chat.apps.ChatConfig',
     'bootstrap5',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -156,6 +158,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
 #MEDIA_ROOT = BASE_DIR / MEDIA_URL
+BASE_URL = "http://127.0.0.1:8000"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

@@ -1,25 +1,33 @@
-from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.views.generic import TemplateView, DetailView
-from homepage.models import Project
-from register.models import Account
-from django.views.generic.edit import CreateView, UpdateView, DeleteView, BaseDeleteView, DeletionMixin
-from homepage.forms import ProjectForm, ProfileUpdateForm
-from django.urls import reverse_lazy
-from django.views.generic.list import ListView
-from django.core.files.storage import default_storage, FileSystemStorage
-import os
-import cv2
-import json
 import base64
-import requests
+import json
+import os
+
+import cv2
 from django.conf import settings
 from django.core import files
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeletionMixin
+from django.views.generic.list import ListView
+
+from friend.friend_request_status import FriendRequestStatus
+from friend.models import FriendList, FriendRequest
+from friend.utils import get_friend_request_or_false
+from homepage.forms import ProjectForm, ProfileUpdateForm
+from homepage.models import Project
+from register.models import Account
 
 TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 
 
 class HomeView(TemplateView):
     template_name = "home.html"
+
+
+class ContactsView(TemplateView):
+    template_name = "contacts.html"
 
 
 class ProjectsView(CreateView, ListView):
@@ -52,8 +60,57 @@ class ProfileView(DetailView):
             self.is_self = False
         elif not user.is_authenticated:
             self.is_self = False
-        context["is_self"] = self.is_self
-        context["is_friend"] = self.is_friend
+        account = Account.objects.get(username=self.kwargs['username'])
+        if account:
+            context['id'] = account.id
+            context['username'] = account.username
+            context['email'] = account.email
+            context['profile_image'] = account.profile_image.url
+            context['hide_email'] = account.hide_email
+            try:
+                friend_list = FriendList.objects.get(user=account)
+            except FriendList.DoesNotExist:
+                friend_list = FriendList(user=account)
+                friend_list.save()
+            friends = friend_list.friends.all()
+            context['friends'] = friends
+            is_self = True
+            is_friend = False
+            request_sent = FriendRequestStatus.NO_REQUEST_SENT.value  # range: ENUM -> friend/friend_request_status.FriendRequestStatus
+            friend_requests = None
+            if user.is_authenticated and user != account:
+                is_self = False
+                if friends.filter(pk=user.id):
+                    is_friend = True
+                else:
+                    is_friend = False
+                    # CASE1: Request has been sent from THEM to YOU: FriendRequestStatus.THEM_SENT_TO_YOU
+                    if get_friend_request_or_false(sender=account, receiver=user):
+                        request_sent = FriendRequestStatus.THEM_SENT_TO_YOU.value
+                        context['pending_friend_request_id'] = get_friend_request_or_false(sender=account,
+                                                                                           receiver=user).id
+                    # CASE2: Request has been sent from YOU to THEM: FriendRequestStatus.YOU_SENT_TO_THEM
+                    elif get_friend_request_or_false(sender=user, receiver=account):
+                        request_sent = FriendRequestStatus.YOU_SENT_TO_THEM.value
+                    # CASE3: No request sent from YOU or THEM: FriendRequestStatus.NO_REQUEST_SENT
+                    else:
+                        request_sent = FriendRequestStatus.NO_REQUEST_SENT.value
+
+            elif not user.is_authenticated:
+                is_self = False
+            else:
+                try:
+                    friend_requests = FriendRequest.objects.filter(receiver=user, is_active=True)
+                except:
+                    pass
+
+            # Set the template variables to the values
+            context['is_self'] = is_self
+            context['is_friend'] = is_friend
+            context['request_sent'] = request_sent
+            context['friend_requests'] = friend_requests
+            context['BASE_URL'] = settings.BASE_URL
+            context['account'] = account
         return context
 
 
@@ -69,7 +126,6 @@ class ProfileSearch(ListView):
         if search_query:
             search_results = Account.objects.filter(username__icontains=search_query)
             accounts = []
-            print(search_results)
             for account in search_results:
                 accounts.append((account, False))
         else:

@@ -42,7 +42,7 @@ class FriendList(models.Model):
             self.notifications.create(
                 target=self.user,
                 from_user=account,
-                redirect_url=f"{settings.BASE_URL}/profile/{account.username}/",
+                redirect_url=f"{settings.BASE_URL}/account/{account.pk}/",
                 verb=f"You are now friends with {account.username}.",
                 content_type=content_type,
             )
@@ -101,12 +101,14 @@ class FriendList(models.Model):
         return "FriendList"
 
     def is_mutual_friend(self, friend):
+
         if friend in self.friends.all():
             return True
         return False
 
 
 class FriendRequest(models.Model):
+
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sender")
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="receiver")
 
@@ -120,7 +122,6 @@ class FriendRequest(models.Model):
         return self.sender.username
 
     def accept(self):
-
         receiver_friend_list = FriendList.objects.get(user=self.receiver)
         if receiver_friend_list:
             content_type = ContentType.objects.get_for_model(self)
@@ -195,7 +196,7 @@ class FriendRequest(models.Model):
         )
 
         notification = Notification.objects.get(target=self.receiver, content_type=content_type, object_id=self.id)
-        notification.verb = f"{self.sender.username} отменил запрос на добавление в друзья."
+        notification.verb = f"{self.sender.username} cancelled the friend request sent to you."
         # notification.timestamp = timezone.now()
         notification.read = False
         notification.save()

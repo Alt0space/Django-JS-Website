@@ -1,10 +1,11 @@
 from django.urls import path
-from homepage.views import HomeView, ProjectsView, ProfileView, ProfileSearch, EditProfileView, DeleteProjectView, crop_image
+from homepage.views import HomeView, ProjectsView, ProfileView, ProfileSearch, EditProfileView, DeleteProjectView, ContactsView, crop_image
 
 app_name = "homepage"
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
+    path("contacts/", ContactsView.as_view(), name="contacts"),
     path("projects/", ProjectsView.as_view(), name="projects"),
     path("projects/delete/", DeleteProjectView.as_view(), name="delete_project"),
     path("profile/<slug:username>", ProfileView.as_view(), name="profile"),
